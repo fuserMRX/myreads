@@ -29,9 +29,10 @@ module.exports = {
     ],
     "rules": {
         "quotes": ["error", "single"],
-        "no-trailing-spaces": [2, { "skipBlankLines": true }],
+        "no-trailing-spaces": [2, { "skipBlankLines": false }],
         "indent": ["error", 4, { "SwitchCase": 1 }],
         "semi": "error",
+        "react/prop-types": 0,
         "array-bracket-spacing": ["error", "never"],
         "no-multi-spaces": "error",
         "react/no-unescaped-entities": 0,
