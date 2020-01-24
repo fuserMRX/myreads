@@ -1,4 +1,6 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+import Control from './Control';
 
 const Shelf = (props) => {
     const books = props.shelfBooks;
@@ -16,7 +18,7 @@ const Shelf = (props) => {
     }
 
     return (
-        <div>
+        <div className="list-books-content">
             <div className="bookshelf">
                 <h2 className="bookshelf-title">{bookTitle}</h2>
                 <div className="bookshelf-books">
@@ -28,6 +30,7 @@ const Shelf = (props) => {
                                         <div className="book-cover"
                                             style={{ width: 128, height: 193, backgroundImage: `url(${book.imageLinks.thumbnail})` }}>
                                         </div>
+                                        <Control defaultValue={props.shelfId} book={book} updateBooks={props.refreshAllBooks} />
                                     </div>
                                     <div className="book-title">{book.title}</div>
                                     <div className="book-authors">{book.authors[0]}</div>
@@ -39,6 +42,12 @@ const Shelf = (props) => {
             </div>
         </div>
     );
+};
+
+Shelf.propTypes = {
+    shelfBooks: PropTypes.array.isRequired,
+    shelfId: PropTypes.string.isRequired,
+    refreshAllBooks: PropTypes.func.isRequired
 };
 
 export default Shelf;
