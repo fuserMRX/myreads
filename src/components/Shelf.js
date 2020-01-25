@@ -28,7 +28,7 @@ const Shelf = (props) => {
                                 <div className="book">
                                     <div className="book-top">
                                         <div className="book-cover"
-                                            style={{ width: 128, height: 193, backgroundImage: `url(${book.imageLinks.thumbnail})` }}>
+                                            style={{ width: 128, height: 193, backgroundImage: `url(${book.imageLinks && book.imageLinks.thumbnail})` }}>
                                         </div>
                                         <Control defaultValue={props.shelfId} book={book} updateBooks={props.refreshAllBooks} />
                                     </div>
