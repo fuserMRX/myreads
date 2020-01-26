@@ -26,7 +26,6 @@ export default class SearhResults extends Component {
         search(val)
             .then((searchResult) => {
                 const errorMessage = 'Unfortunately there are no books in your search result. Please try another one.';
-                console.log(searchResult);
                 this.setState(() => ({
                     queryBooks: (searchResult && !searchResult.error) ? searchResult : [],
                     error: (searchResult && searchResult.error) ? errorMessage : ''

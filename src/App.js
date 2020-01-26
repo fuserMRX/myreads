@@ -15,7 +15,6 @@ class BooksApp extends React.Component {
     getAllBooks = () => {
         getAll()
             .then(booksFromDB => {
-                console.log(booksFromDB);
                 this.setState(() => ({
                     books: booksFromDB,
                     // Filter shelves Ids and save them in state because new Ids can be added on the backend side

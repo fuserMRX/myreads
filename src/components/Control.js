@@ -18,8 +18,7 @@ class Control extends Component {
         let shelfToChange = e.target.value;
         // Update shelf ID on the backend side
         update(this.props.book, shelfToChange)
-            .then(res => {
-                console.log(res);
+            .then(() => {
                 // Ability to show at once the needed shelf in select
                 this.setState(() => ({
                     shelfId: shelfToChange
