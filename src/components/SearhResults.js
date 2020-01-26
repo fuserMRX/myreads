@@ -34,6 +34,22 @@ export default class SearhResults extends Component {
             });
     };
 
+
+    /**
+    * Helper for shelves consistency between pages
+    * @description help to define shelf and pass it for consistency between search and main page
+    * @param {object} book - book from the serach query
+    * @returns {string || object} returns empty string or book object
+    */
+    checkIfBookExistsOnShelf = (book) => {
+        const existingBooks = this.props.booksOnShelves;
+        const searchBooks = existingBooks.filter(existingBook => existingBook.id === book.id);
+        if (searchBooks.length > 0) {
+            return searchBooks[0].shelf;
+        }
+        return '';
+    }
+
     render() {
         return (
             <div className="search-books">
@@ -54,7 +70,7 @@ export default class SearhResults extends Component {
                                         <div className="book-cover"
                                             style={{ width: 128, height: 193, backgroundImage: `url(${(book.imageLinks && book.imageLinks.thumbnail) || (book.imageLinks && book.imageLinks.smallThumbnail)})`}}>
                                         </div>
-                                        <Control defaultValue={book.shelf || 'none'} book={book} updateBooks={this.props.updateBooks} />
+                                        <Control defaultValue={this.checkIfBookExistsOnShelf(book) || 'none'} book={book} updateBooks={this.props.updateBooks} />
                                     </div>
                                     <div className="book-title">{book.title && book.title}</div>
                                     <div className="book-authors">
