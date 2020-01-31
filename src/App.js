@@ -9,22 +9,30 @@ class BooksApp extends React.Component {
 
     state = {
         books: [],
-        shelvesIds: []
+        shelvesIds: [],
+        triggerScroll: false
     }
 
-    getAllBooks = () => {
+    getAllBooks = (changeScroll) => {
         getAll()
             .then(booksFromDB => {
                 this.setState(() => ({
                     books: booksFromDB,
                     // Filter shelves Ids and save them in state because new Ids can be added on the backend side
-                    shelvesIds: booksFromDB.map(book => book.shelf).filter((shelf, index, arr) => arr.indexOf(shelf) === index)
+                    shelvesIds: booksFromDB.map(book => book.shelf).filter((shelf, index, arr) => arr.indexOf(shelf) === index),
+                    triggerScroll: changeScroll || false
                 }));
             });
     }
 
     componentDidMount() {
         this.getAllBooks();
+    }
+
+    updateScrollState = (scrollParam) => {
+        this.setState(() => ({
+            triggerScroll: scrollParam
+        }));
     }
 
     /**
@@ -42,10 +50,20 @@ class BooksApp extends React.Component {
         return (
             <div className="app">
                 <Route exact path="/" render={() => (
-                    <ShelvesView shelvesIds={this.state.shelvesIds} getBooksForShelf={this.getBooksForShelf} refreshAllBooks={this.getAllBooks}/>
+                    <ShelvesView
+                        books={this.state.books}
+                        shelvesIds={this.state.shelvesIds}
+                        getBooksForShelf={this.getBooksForShelf}
+                        refreshAllBooks={this.getAllBooks}
+                        triggerScroll={this.state.triggerScroll}
+                    />
                 )}/>
                 <Route path="/search" render={() => (
-                    <SearchResults booksOnShelves={Object.values(this.state.books)} updateBooks={this.getAllBooks} />
+                    <SearchResults
+                        triggerScroll={this.state.triggerScroll}
+                        updateScrollState={this.updateScrollState}
+                        booksOnShelves={Object.values(this.state.books)}
+                        updateBooks={this.getAllBooks} />
                 )} />
             </div>
         );

@@ -16,14 +16,15 @@ class Control extends Component {
 
     handleChange = (e) => {
         let shelfToChange = e.target.value;
-        // Update shelf ID on the backend side
+        // Update shelf ID on the backend side and trigger scroll
+        const triggerScroll = this.props.triggerScroll ? false : true;
         update(this.props.book, shelfToChange)
             .then(() => {
                 // Ability to show at once the needed shelf in select
                 this.setState(() => ({
                     shelfId: shelfToChange
                 }));
-                this.props.updateBooks();
+                this.props.updateBooks(triggerScroll);
             })
             .catch(e => console.log(e.message));
     };

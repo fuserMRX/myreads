@@ -10,7 +10,13 @@ const ShelvesView = (props) => {
                 <h1>MyReads</h1>
             </div>
             {props.shelvesIds.map(shelfId => (
-                <Shelf key={shelfId} shelfId={shelfId} shelfBooks={props.getBooksForShelf(shelfId)} refreshAllBooks={props.refreshAllBooks} />
+                <Shelf
+                    key={shelfId}
+                    shelfId={shelfId}
+                    shelfBooks={props.getBooksForShelf(shelfId)}
+                    refreshAllBooks={props.refreshAllBooks}
+                    triggerScroll={props.triggerScroll}
+                />
             ))}
             <Search />
         </div>
@@ -20,7 +26,8 @@ const ShelvesView = (props) => {
 ShelvesView.propTypes = {
     shelvesIds: PropTypes.array.isRequired,
     getBooksForShelf: PropTypes.func.isRequired,
-    refreshAllBooks: PropTypes.func.isRequired
+    refreshAllBooks: PropTypes.func.isRequired,
+    triggerScroll: PropTypes.bool.isRequired
 };
 
 export default ShelvesView;

@@ -6,8 +6,19 @@ import Control from './Control';
 
 export default class SearhResults extends Component {
 
+    constructor(props) {
+        super(props);
+        this.scrollState = this.props.triggerScroll;
+        // Prevent scrolling to the bottom if we switch to the main page ("/")
+        if (this.scrollState) {
+            this.props.updateScrollState(false);
+        }
+    }
+
     static propTypes = {
-        updateBooks: PropTypes.func.isRequired
+        updateBooks: PropTypes.func.isRequired,
+        updateScrollState: PropTypes.func.isRequired,
+        booksOnShelves: PropTypes.array.isRequired
     }
 
     state = {
@@ -69,7 +80,7 @@ export default class SearhResults extends Component {
                                         <div className="book-cover"
                                             style={{ width: 128, height: 193, backgroundImage: `url(${(book.imageLinks && book.imageLinks.thumbnail) || (book.imageLinks && book.imageLinks.smallThumbnail)})`}}>
                                         </div>
-                                        <Control defaultValue={this.checkIfBookExistsOnShelf(book) || 'none'} book={book} updateBooks={this.props.updateBooks} />
+                                        <Control triggerScroll={'false'} defaultValue={this.checkIfBookExistsOnShelf(book) || 'none'} book={book} updateBooks={this.props.updateBooks} />
                                     </div>
                                     <div className="book-title">{book.title && book.title}</div>
                                     <div className="book-authors">
