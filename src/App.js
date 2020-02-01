@@ -1,6 +1,6 @@
 import React from 'react';
 import { Route } from 'react-router-dom';
-import { getAll } from './BooksAPI';
+import { getAll, update } from './BooksAPI';
 import ShelvesView from './components/ShelvesView';
 import SearchResults from './components/SearhResults';
 import './App.css';
@@ -25,6 +25,19 @@ class BooksApp extends React.Component {
             });
     }
 
+    removeAllBooksFromTheShelves = () => {
+        const { books } = this.state;
+        this.setState(() => ({
+            books: [],
+            shelvesIds: []
+        }));
+        if (books.length > 0) {
+            books.forEach(book => {
+                update(book, 'none');
+            });
+        }
+    }
+
     componentDidMount() {
         this.getAllBooks();
     }
@@ -42,7 +55,7 @@ class BooksApp extends React.Component {
     * @returns {Array} return books for shelf
     */
     getBooksForShelf = (shelfId) => {
-        const booksInShelf = this.state.books.filter((book) => book.shelf === shelfId);
+        const booksInShelf = this.state.books && this.state.books.filter((book) => book.shelf === shelfId);
         return booksInShelf;
     }
 
@@ -51,11 +64,11 @@ class BooksApp extends React.Component {
             <div className="app">
                 <Route exact path="/" render={() => (
                     <ShelvesView
-                        books={this.state.books}
                         shelvesIds={this.state.shelvesIds}
                         getBooksForShelf={this.getBooksForShelf}
                         refreshAllBooks={this.getAllBooks}
                         triggerScroll={this.state.triggerScroll}
+                        removeAllBooks={this.removeAllBooksFromTheShelves}
                     />
                 )}/>
                 <Route path="/search" render={() => (

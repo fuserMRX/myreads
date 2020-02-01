@@ -77,6 +77,45 @@ body,
   cursor: pointer;
 }
 
+.remove-books {
+  position: fixed;
+  right: 25px;
+  bottom: 820px;
+}
+
+.remove-books button {
+  display: block;
+  height: 50px;
+  border-radius: 50%;
+  background: #2e7d32;
+  color: white;
+  background-repeat: no-repeat;
+  background-position: center;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+  outline: 0;
+}
+
+
+.remove-books button span {
+  max-width: 0;
+  -webkit-transition: max-width 1s;
+  transition: max-width 1s;
+  display: inline-block;
+  vertical-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.remove-books button:hover span {
+  max-width: 7rem;
+  color: white;
+}
+
+.remove-books button:hover {
+  background-color: rgb(0, 102, 0);
+  cursor: pointer;
+}
+
 
 /* search page */
 
