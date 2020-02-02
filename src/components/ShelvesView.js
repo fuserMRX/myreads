@@ -1,30 +1,32 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import PropTypes from 'prop-types';
-import Shelf from './Shelf';
 import Search from './Search';
 import SearchFilter from './SearchFilter';
 import RemoveBooksButton from './RemoveBooksButton';
 
+const Shelf = React.lazy(() => import('./Shelf')); // Lazy-loaded
+
+
 const ShelvesView = (props) => {
-    const noBooksMessage = 'Sorry you don\'t have any books on shelves. Please consider to use button below to add new ones.';
     return (
         <div className="list-books">
             <div className="list-books-title">
                 <h1>MyReads</h1>
             </div>
-            <SearchFilter filterBooks={props.filterBooks} />
-            {!props.shelvesIds.length && <h3 style={{textAlign: 'center'}}>{noBooksMessage}</h3>}
+            <SearchFilter filterBooks={props.filterBooks} presentQuery={props.presentQuery} />
             {props.shelvesIds.map(shelfId => (
-                <Shelf
-                    key={shelfId}
-                    shelfId={shelfId}
-                    shelfBooks={props.getBooksForShelf(shelfId)}
-                    refreshAllBooks={props.refreshAllBooks}
-                    triggerScroll={props.triggerScroll}
-                />
+                <Suspense key={shelfId} fallback={<h1>Loading shelf...</h1>}>
+                    <Shelf
+                        key={shelfId}
+                        shelfId={shelfId}
+                        shelfBooks={props.getBooksForShelf(shelfId)}
+                        refreshAllBooks={props.refreshAllBooks}
+                        triggerScroll={props.triggerScroll}
+                    />
+                </Suspense>
             ))}
             <Search />
-            <RemoveBooksButton removeAllBooks={props.removeAllBooks}/>
+            <RemoveBooksButton removeAllBooks={props.removeAllBooks} />
         </div>
     );
 };

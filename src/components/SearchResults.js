@@ -4,21 +4,19 @@ import PropTypes from 'prop-types';
 import { search } from '../BooksAPI';
 import Control from './Control';
 
-export default class SearhResults extends Component {
+class SearchResults extends Component {
 
     constructor(props) {
         super(props);
         this.scrollState = this.props.triggerScroll;
         // Prevent scrolling to the bottom if we switch to the main page ("/")
-        // And updated state for filtered books in order to refresh results
-        this.props.updateScrollAndFilteredBooksState(false, []);
+        this.props.updateScrollState(false);
     }
 
     static propTypes = {
         updateBooks: PropTypes.func.isRequired,
-        updateScrollAndFilteredBooksState: PropTypes.func.isRequired,
-        booksOnShelves: PropTypes.array.isRequired,
-        filteredBooks: PropTypes.array.isRequired
+        updateScrollState: PropTypes.func.isRequired,
+        booksOnShelves: PropTypes.array.isRequired
     }
 
     state = {
@@ -95,3 +93,5 @@ export default class SearhResults extends Component {
         );
     }
 }
+
+export default SearchResults;

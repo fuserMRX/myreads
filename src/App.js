@@ -2,7 +2,7 @@ import React from 'react';
 import { Route } from 'react-router-dom';
 import { getAll, update } from './BooksAPI';
 import ShelvesView from './components/ShelvesView';
-import SearchResults from './components/SearhResults';
+import SearchResults from './components/SearchResults';
 import './App.css';
 
 class BooksApp extends React.Component {
@@ -11,28 +11,34 @@ class BooksApp extends React.Component {
         books: [],
         shelvesIds: [],
         triggerScroll: false,
-        filteredBooks: []
+        filteredBooksObj: {
+            updatedBooks: [],
+            query: ''
+        }
     }
 
     getAllBooks = (changeScroll) => {
         getAll()
             .then(booksFromDB => {
-                console.log(booksFromDB);
                 this.setState(() => ({
                     books: booksFromDB,
                     // Filter shelves Ids and save them in state because new Ids can be added on the backend side
                     shelvesIds: booksFromDB.map(book => book.shelf).filter((shelf, index, arr) => arr.indexOf(shelf) === index),
-                    triggerScroll: changeScroll || false
+                    triggerScroll: changeScroll || false,
+                    // Clean up filtered books on the main page so that the scroll between books works correctly
+                    filteredBooksObj: { updatedBooks: [], query: '' }
                 }));
             });
     }
 
     removeAllBooksFromTheShelves = () => {
         const { books } = this.state;
+        // Immediatly clean all books
         this.setState(() => ({
             books: [],
             shelvesIds: []
         }));
+        // Move all books in none
         if (books.length > 0) {
             books.forEach(book => {
                 update(book, 'none');
@@ -40,10 +46,16 @@ class BooksApp extends React.Component {
         }
     }
 
-    filterBooks = (query) => {
-        const updatedBooks = this.state.books.filter( book => book.title.toLowerCase().includes(query.toLowerCase()));
+    /**
+    * State handling function
+    * @description handles state based on search availability
+    * @param {object} event - SyntheticEvent object
+    */
+    filterBooks = (event) => {
+        let query = event.target.value;
+        const updatedBooks = this.state.books.filter(book => book.title.toLowerCase().includes(query.toLowerCase()));
         this.setState(() => ({
-            filteredBooks: updatedBooks
+            filteredBooksObj: { updatedBooks: updatedBooks, query: query }
         }));
     }
 
@@ -52,10 +64,9 @@ class BooksApp extends React.Component {
         this.getAllBooks();
     }
 
-    updateScrollAndFilteredBooksState = (scrollParam, booksArray) => {
+    updateScrollState = (scrollParam) => {
         this.setState(() => ({
-            triggerScroll: scrollParam,
-            filteredBooks: booksArray
+            triggerScroll: scrollParam
         }));
     }
 
@@ -67,8 +78,8 @@ class BooksApp extends React.Component {
     */
     getBooksForShelf = (shelfId) => {
         let booksInShelf = [];
-        if (this.state.filteredBooks.length > 0) {
-            return this.state.filteredBooks.filter((book) => book.shelf === shelfId);
+        if (this.state.filteredBooksObj.query) {
+            return this.state.filteredBooksObj.updatedBooks.filter((book) => book.shelf === shelfId);
         }
         booksInShelf = this.state.books && this.state.books.filter((book) => book.shelf === shelfId);
         return booksInShelf;
@@ -80,18 +91,19 @@ class BooksApp extends React.Component {
                 <Route exact path="/" render={() => (
                     <ShelvesView
                         filterBooks={this.filterBooks}
+                        presentQuery={this.state.filteredBooksObj.query}
                         shelvesIds={this.state.shelvesIds}
                         getBooksForShelf={this.getBooksForShelf}
                         refreshAllBooks={this.getAllBooks}
                         triggerScroll={this.state.triggerScroll}
                         removeAllBooks={this.removeAllBooksFromTheShelves}
                     />
-                )}/>
+                )} />
                 <Route path="/search" render={() => (
                     <SearchResults
                         triggerScroll={this.state.triggerScroll}
                         filteredBooks={this.state.filteredBooks}
-                        updateScrollAndFilteredBooksState={this.updateScrollAndFilteredBooksState}
+                        updateScrollState={this.updateScrollState}
                         booksOnShelves={Object.values(this.state.books)}
                         updateBooks={this.getAllBooks} />
                 )} />

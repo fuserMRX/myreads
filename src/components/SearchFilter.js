@@ -1,41 +1,25 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 
-class SearhFilter extends Component {
-
-    static propTypes = {
-        filterBooks: PropTypes.func.isRequired
-    }
-
-    state = {
-        query: '',
-    };
-
-    /**
-    * State handling function
-    * @description handles state based on search availability
-    * @param {object} event - SyntheticEvent object
-    * @returns {string} updated state
-    */
-    handleSearchFilter = (event) => {
-        let val = event.target.value;
-        this.setState(() => ({
-            query: val,
-        }));
-        this.props.filterBooks(val);
-    };
-
-    render() {
-        return (
-            <div className="search-books">
-                <div className="search-books-main-page-bar">
-                    <div className="search-books-input-wrapper">
-                        <input type="text" placeholder="Search by title" value={this.state.query} onChange={this.handleSearchFilter} />
-                    </div>
+// Fully controlled component because value in input depends on value in the state on the Main page (App.js - state)
+const SearchFilter = (props) => {
+    return (
+        <div className="search-books">
+            <div className="search-books-main-page-bar">
+                <div className="search-books-input-wrapper">
+                    <input type="text"
+                        placeholder="Search by title"
+                        value={props.presentQuery}
+                        onChange={props.filterBooks} />
                 </div>
             </div>
-        );
-    }
-}
+        </div>
+    );
+};
 
-export default SearhFilter;
+SearchFilter.propTypes = {
+    filterBooks: PropTypes.func.isRequired,
+    presentQuery: PropTypes.string.isRequired
+};
+
+export default SearchFilter;
