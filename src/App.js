@@ -7,6 +7,11 @@ import './App.css';
 
 class BooksApp extends React.Component {
 
+    constructor(props){
+        super(props);
+        this.errorMessage = 'Sorry you don\'t have any books on shelves. Please consider to use button below to add new ones.';
+    }
+
     state = {
         books: [],
         shelvesIds: [],
@@ -14,7 +19,8 @@ class BooksApp extends React.Component {
         filteredBooksObj: {
             updatedBooks: [],
             query: ''
-        }
+        },
+        error: ''
     }
 
     getAllBooks = (changeScroll) => {
@@ -26,7 +32,8 @@ class BooksApp extends React.Component {
                     shelvesIds: booksFromDB.map(book => book.shelf).filter((shelf, index, arr) => arr.indexOf(shelf) === index),
                     triggerScroll: changeScroll || false,
                     // Clean up filtered books on the main page so that the scroll between books works correctly
-                    filteredBooksObj: { updatedBooks: [], query: '' }
+                    filteredBooksObj: { updatedBooks: [], query: '' },
+                    error: booksFromDB.length ? '' : this.errorMessage
                 }));
             });
     }
@@ -36,7 +43,8 @@ class BooksApp extends React.Component {
         // Immediatly clean all books
         this.setState(() => ({
             books: [],
-            shelvesIds: []
+            shelvesIds: [],
+            error: this.errorMessage
         }));
         // Move all books in none
         if (books.length > 0) {
@@ -90,6 +98,7 @@ class BooksApp extends React.Component {
             <div className="app">
                 <Route exact path="/" render={() => (
                     <ShelvesView
+                        errorMessage={this.state.error}
                         filterBooks={this.filterBooks}
                         presentQuery={this.state.filteredBooksObj.query}
                         shelvesIds={this.state.shelvesIds}

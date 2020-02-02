@@ -13,6 +13,7 @@ const ShelvesView = (props) => {
             <div className="list-books-title">
                 <h1>MyReads</h1>
             </div>
+            {props.errorMessage && <h3 style={{textAlign: 'center'}}>{props.errorMessage}</h3>}
             <SearchFilter filterBooks={props.filterBooks} presentQuery={props.presentQuery} />
             {props.shelvesIds.map(shelfId => (
                 <Suspense key={shelfId} fallback={<h1>Loading shelf...</h1>}>
