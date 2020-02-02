@@ -10,12 +10,14 @@ class BooksApp extends React.Component {
     state = {
         books: [],
         shelvesIds: [],
-        triggerScroll: false
+        triggerScroll: false,
+        filteredBooks: []
     }
 
     getAllBooks = (changeScroll) => {
         getAll()
             .then(booksFromDB => {
+                console.log(booksFromDB);
                 this.setState(() => ({
                     books: booksFromDB,
                     // Filter shelves Ids and save them in state because new Ids can be added on the backend side
@@ -38,13 +40,22 @@ class BooksApp extends React.Component {
         }
     }
 
+    filterBooks = (query) => {
+        const updatedBooks = this.state.books.filter( book => book.title.toLowerCase().includes(query.toLowerCase()));
+        this.setState(() => ({
+            filteredBooks: updatedBooks
+        }));
+    }
+
+
     componentDidMount() {
         this.getAllBooks();
     }
 
-    updateScrollState = (scrollParam) => {
+    updateScrollAndFilteredBooksState = (scrollParam, booksArray) => {
         this.setState(() => ({
-            triggerScroll: scrollParam
+            triggerScroll: scrollParam,
+            filteredBooks: booksArray
         }));
     }
 
@@ -55,7 +66,11 @@ class BooksApp extends React.Component {
     * @returns {Array} return books for shelf
     */
     getBooksForShelf = (shelfId) => {
-        const booksInShelf = this.state.books && this.state.books.filter((book) => book.shelf === shelfId);
+        let booksInShelf = [];
+        if (this.state.filteredBooks.length > 0) {
+            return this.state.filteredBooks.filter((book) => book.shelf === shelfId);
+        }
+        booksInShelf = this.state.books && this.state.books.filter((book) => book.shelf === shelfId);
         return booksInShelf;
     }
 
@@ -64,6 +79,7 @@ class BooksApp extends React.Component {
             <div className="app">
                 <Route exact path="/" render={() => (
                     <ShelvesView
+                        filterBooks={this.filterBooks}
                         shelvesIds={this.state.shelvesIds}
                         getBooksForShelf={this.getBooksForShelf}
                         refreshAllBooks={this.getAllBooks}
@@ -74,7 +90,8 @@ class BooksApp extends React.Component {
                 <Route path="/search" render={() => (
                     <SearchResults
                         triggerScroll={this.state.triggerScroll}
-                        updateScrollState={this.updateScrollState}
+                        filteredBooks={this.state.filteredBooks}
+                        updateScrollAndFilteredBooksState={this.updateScrollAndFilteredBooksState}
                         booksOnShelves={Object.values(this.state.books)}
                         updateBooks={this.getAllBooks} />
                 )} />

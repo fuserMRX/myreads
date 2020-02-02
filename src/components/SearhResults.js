@@ -10,15 +10,15 @@ export default class SearhResults extends Component {
         super(props);
         this.scrollState = this.props.triggerScroll;
         // Prevent scrolling to the bottom if we switch to the main page ("/")
-        if (this.scrollState) {
-            this.props.updateScrollState(false);
-        }
+        // And updated state for filtered books in order to refresh results
+        this.props.updateScrollAndFilteredBooksState(false, []);
     }
 
     static propTypes = {
         updateBooks: PropTypes.func.isRequired,
-        updateScrollState: PropTypes.func.isRequired,
-        booksOnShelves: PropTypes.array.isRequired
+        updateScrollAndFilteredBooksState: PropTypes.func.isRequired,
+        booksOnShelves: PropTypes.array.isRequired,
+        filteredBooks: PropTypes.array.isRequired
     }
 
     state = {
@@ -51,7 +51,7 @@ export default class SearhResults extends Component {
     * @param {object} book - book from the serach query
     * @returns {string || object} returns empty string or book object
     */
-    checkIfBookExistsOnShelf = (book) => {
+    checkIfBookExistsOnShelf(book) {
         const existingBooks = this.props.booksOnShelves;
         const searchBooks = existingBooks.filter(existingBook => existingBook.id === book.id);
         if (searchBooks.length > 0) {

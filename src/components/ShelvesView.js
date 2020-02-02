@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Shelf from './Shelf';
 import Search from './Search';
+import SearchFilter from './SearchFilter';
 import RemoveBooksButton from './RemoveBooksButton';
 
 const ShelvesView = (props) => {
@@ -11,6 +12,7 @@ const ShelvesView = (props) => {
             <div className="list-books-title">
                 <h1>MyReads</h1>
             </div>
+            <SearchFilter filterBooks={props.filterBooks} />
             {!props.shelvesIds.length && <h3 style={{textAlign: 'center'}}>{noBooksMessage}</h3>}
             {props.shelvesIds.map(shelfId => (
                 <Shelf
